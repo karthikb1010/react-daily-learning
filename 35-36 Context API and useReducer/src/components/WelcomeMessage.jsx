@@ -5,7 +5,11 @@ import { TodoItemsContext } from "../store/todo-items-store";
 const WelcomeMessage = () => {
   const { todoItems } = useContext(TodoItemsContext);
 
-  return todoItems.length === 0 && <p className={styles.welcome}> Hello </p>;
+  return (
+    todoItems.length === 0 && (
+      <p className={styles.welcome}> Hello welcome to do app</p>
+    )
+  );
 };
 
 export default WelcomeMessage;
