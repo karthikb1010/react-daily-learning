@@ -7,7 +7,7 @@ const WelcomeMessage = () => {
 
   return (
     todoItems.length === 0 && (
-      <p className={styles.welcome}> Hello welcome to do app</p>
+      <p className={styles.welcome}> Hello Everyone Enjoy ,welcome to do App</p>
     )
   );
 };
