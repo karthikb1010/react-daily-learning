@@ -1,10 +1,11 @@
-import { useMemo } from "react";
+import { useState } from "react";
+import { useEffect } from "react";
 import { createContext, useReducer } from "react";
 
 export const PostList = createContext({
   postList: [],
+  fetching: false,
   addPost: () => {},
-  addInitialPosts: () => {},
   deletePost: () => {},
 });
 
@@ -25,18 +26,12 @@ const postListReducer = (currPostList, action) => {
 const PostListProvider = ({ children }) => {
   const [postList, dispatchPostList] = useReducer(postListReducer, []);
 
-  const addPost = (userId, postTitle, postBody, reactions, tags) => {
-    console.log(`${reactions}`);
+  const [fetching, setFetching] = useState(false);
+
+  const addPost = (post) => {
     dispatchPostList({
       type: "ADD_POST",
-      payload: {
-        id: Date.now(),
-        title: postTitle,
-        body: postBody,
-        reactions: reactions,
-        userId: userId,
-        tags: tags,
-      },
+      payload: post,
     });
   };
 
@@ -48,7 +43,7 @@ const PostListProvider = ({ children }) => {
       },
     });
   };
-  //we cann use here useCallback
+
   const deletePost = (postId) => {
     dispatchPostList({
       type: "DELETE_POST",
@@ -57,19 +52,27 @@ const PostListProvider = ({ children }) => {
       },
     });
   };
-  //useMemo
-  //const arr = [5,3,2,5,4]
-  //const sortedArr = useMemo(()=>arr.sort(),[arr])
+
+  useEffect(() => {
+    setFetching(true);
+    const controller = new AbortController();
+    const signal = controller.signal;
+
+    fetch("https://dummyjson.com/posts", { signal })
+      .then((res) => res.json())
+      .then((data) => {
+        addInitialPosts(data.posts);
+        setFetching(false);
+      });
+
+    return () => {
+      console.log("Cleaning up UseEffect.");
+      controller.abort();
+    };
+  }, []);
 
   return (
-    <PostList.Provider
-      value={{
-        postList,
-        addPost,
-        addInitialPosts,
-        deletePost,
-      }}
-    >
+    <PostList.Provider value={{ postList, fetching, addPost, deletePost }}>
       {children}
     </PostList.Provider>
   );

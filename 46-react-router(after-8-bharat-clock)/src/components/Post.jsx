@@ -1,5 +1,5 @@
 import { useContext } from "react";
-import { MdDelete } from "react-icons/md";
+import { AiFillDelete } from "react-icons/ai";
 import { PostList } from "../store/post-list-store";
 
 const Post = ({ post }) => {
@@ -12,11 +12,9 @@ const Post = ({ post }) => {
           {post.title}
           <span
             className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger"
-            onClick={() => {
-              deletePost(post.id);
-            }}
+            onClick={() => deletePost(post.id)}
           >
-            <MdDelete />
+            <AiFillDelete />
           </span>
         </h5>
         <p className="card-text">{post.body}</p>
@@ -25,11 +23,9 @@ const Post = ({ post }) => {
             {tag}
           </span>
         ))}
-        {/* <div className="alert alert-success reactions" role="alert">
-          This Post has been Reacted by {post.reactions} members
-        </div> */}
         <div className="alert alert-success reactions" role="alert">
-          Likes: {post.reactions.likes} | Dislikes: {post.reactions.dislikes}
+          This post has been reacted by{" "}
+          {post.reactions.likes + post.reactions.dislikes} people
         </div>
       </div>
     </div>

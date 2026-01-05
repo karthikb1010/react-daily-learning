@@ -15,16 +15,33 @@ const CreatePost = () => {
     const userId = userIdElement.current.value;
     const postTitle = postTitleElement.current.value;
     const postBody = postBodyElement.current.value;
-    const reactions = reactionsElement.current.value;
+    const reactions = {
+      likes: Number(reactionsElement.current.value),
+      dislikes: 0,
+    };
     const tags = tagsElement.current.value.split(" ");
-
-    addPost(userId, postTitle, postBody, reactions, tags);
 
     userIdElement.current.value = "";
     postTitleElement.current.value = "";
     postBodyElement.current.value = "";
     reactionsElement.current.value = "";
     tagsElement.current.value = "";
+
+    fetch("https://dummyjson.com/posts/add", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        title: postTitle,
+        body: postBody,
+        reactions: reactions,
+        userId: userId,
+        tags: tags,
+      }),
+    })
+      .then((res) => res.json())
+      .then((post) => {
+        addPost(post);
+      });
   };
 
   return (
@@ -38,7 +55,7 @@ const CreatePost = () => {
           ref={userIdElement}
           className="form-control"
           id="userId"
-          placeholder="Your user ID"
+          placeholder="Your User Id"
         />
       </div>
 
@@ -51,7 +68,7 @@ const CreatePost = () => {
           ref={postTitleElement}
           className="form-control"
           id="title"
-          placeholder="How are you feeling today.. "
+          placeholder="How are you feeling today..."
         />
       </div>
 
@@ -60,12 +77,12 @@ const CreatePost = () => {
           Post Content
         </label>
         <textarea
-          rows="4"
           type="text"
           ref={postBodyElement}
+          rows="4"
           className="form-control"
           id="body"
-          placeholder="Tell us more about it "
+          placeholder="Tell us more about it"
         />
       </div>
 
@@ -78,7 +95,7 @@ const CreatePost = () => {
           ref={reactionsElement}
           className="form-control"
           id="reactions"
-          placeholder="How many people reacted  to this post "
+          placeholder="How many people reacted to this post"
         />
       </div>
 
@@ -88,10 +105,10 @@ const CreatePost = () => {
         </label>
         <input
           type="text"
-          ref={tagsElement}
           className="form-control"
           id="tags"
-          placeholder="Please enter tags using space "
+          ref={tagsElement}
+          placeholder="Please enter tags using space"
         />
       </div>
 
